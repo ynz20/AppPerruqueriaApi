@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('users');
-        Schema::create('users', function (Blueprint $table) {
-            $table->string('DNI', 20)->unique()->nullable();
-            $table->string('Name', 100)->nullable();
-            $table->string('Surname', 100)->nullable();
-            $table->string('Telf', 20)->nullable();
-            $table->string('Email', 100)->nullable();
-            $table->timestamp('Email_verified_at')->nullable();
-            $table->string('Nick', 50)->nullable();
-            $table->string('Password', 255)->nullable();
-            $table->boolean('Is_admin')->nullable();
-            $table->timestamps();
+
+        Schema::table('users', function (Blueprint $table) {
+
+            $table->string('dni')->unique();
+            $table->string('surname')->after('name');
+            $table->string('nick')->after('surname');
+            $table->string('telf')->after('nick');
+            $table->boolean('is_admin')->default(0);// Afegeix el camp 'role' amb valor per defecte 'user'
         });
     }
 
@@ -31,6 +27,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn('surname');
+        $table->dropColumn('nick');
+        $table->dropColumn('telf');
+        $table->dropColumn('is_admin');
+    });
+      
     }
 };
