@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
 
 //Rutes Públiques
@@ -18,6 +19,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Ruta per consultar els clients
+    Route::apiResource('clients', ClientController::class);
+    
 });
 
 
