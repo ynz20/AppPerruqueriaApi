@@ -14,10 +14,10 @@ class ShiftController extends Controller
     public function index()
     {
         try {
-            $shift = Shift::all();
+            $shifts = Shift::with('reservations')->get();
             return response()->json([
                 'status' => 'true',
-                'shifts' => $shift,
+                'shifts' => $shifts,
                 'message' => 'Llista de torns'
             ], 200);
         } catch (\Throwable $th) {
