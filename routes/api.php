@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 //Rutes Públiques
@@ -27,6 +28,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('shifts', ShiftController::class);
     //Ruta per consultar els serveis
     Route::apiResource('services', ServiceController::class);
+    //ruta per consultar les reserves
+    Route::apiResource('reservations', ReservationController::class);
 });
 
 
