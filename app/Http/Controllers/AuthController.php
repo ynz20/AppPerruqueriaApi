@@ -62,17 +62,17 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'token' => $token,
-                'message' => 'Usuari loguejat',    
-            ],200);
+                'message' => 'Usuari loguejat',
+            ], 200);
         } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Usuari no loguejat',
-            ],401);
+            ], 401);
         }
     }
 
-    
+
 
 
     public function logout(Request $request)
