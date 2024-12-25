@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Reservation;
 use App\Models\Service;
 use App\Models\Shift;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -38,6 +40,26 @@ class DatabaseSeeder extends Seeder
 
         // Shift::factory(1)->create();
 
-        Service::factory(3)->create();
+        // Service::factory(3)->create();
+
+        Reservation::factory()->create([
+            "date" => "2021-10-10",
+            "hour" => "10:00:00", // Asegúrate de que sea un valor válido
+            "worker_dni" => "20572143T",
+            "client_dni" => "14298158T",
+            "service_id" => 1,
+            "shift_id" => 1,
+            "status" => "completed",
+        ]);
+
+        Reservation::factory()->create([
+            "date" => "2021-10-10",
+            "hour" => "11:00:00", // Asegúrate de que sea un valor válido
+            "worker_dni" => "20572143T",
+            "client_dni" => "14298158T",
+            "service_id" => 2,
+            "shift_id" => 1,
+            "status" => "completed",
+        ]);
     }
 }
