@@ -38,7 +38,7 @@ class AuthController extends Controller
             'telf' => $request->telf,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => 0,
+            'is_admin' => 1,
         ]);
 
         Auth::login($user);
@@ -62,7 +62,9 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'token' => $token,
-                'message' => 'Usuari loguejat',    
+                'message' => 'Usuari loguejat',
+                'user_id' => $user->id,
+                'role' =>  $user->is_admin,
             ],200);
         } else {
             return response()->json([

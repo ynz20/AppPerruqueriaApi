@@ -17,7 +17,7 @@ class ServiceController extends Controller
             $services = Service::all();
             return response()->json([
                 'status' => true,
-                'data' => $services,
+                'services' => $services,
                 'message' => 'Llista de serveis'
             ], 200);
         } catch (\Throwable $th) {
