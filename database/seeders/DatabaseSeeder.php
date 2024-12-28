@@ -19,34 +19,42 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+    
 
-        // User::factory()->create([
-        //     'name' => 'Luis',
-        //     'surname' => 'Perez',
-        //     'nick' => 'luisp',
-        //     'telf' => '123456789',
-        //     'email' => 'test@example.com',
-        //     'email_verified_at' => now(),
-        //     'password' => bcrypt('123456789'),
-        //     'remember_token' => Str::random(10),
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        //     'dni' => '20572143T',
-        //     'is_admin' => 0,
-        // ]);
+        User::factory()->create([
+            'name' => 'Luis',
+            'surname' => 'Perez',
+            'nick' => 'luisp',
+            'telf' => '123456789',
+            'email' => 'test@example.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('123456789'),
+            'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'dni' => '20572143T',
+            'is_admin' => 0,
+        ]);
 
-        // Client::factory(3)->create();
+        Client::factory(3)->create();
 
-        // Shift::factory(1)->create();
+        Client::factory()->create([
+            'dni' => '50572123G',
+            'name' => 'Yeray',
+            'surname' => 'Zafra',
+            'telf' => '600749384',
+            'email' => 'luisruiz@gmail.com'
+        ]);
 
-        // Service::factory(3)->create();
+        Shift::factory(1)->create();
+
+        Service::factory(3)->create();
 
         Reservation::factory()->create([
             "date" => "2021-10-10",
             "hour" => "10:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
-            "client_dni" => "14298158T",
+            "client_dni" => "50572123G",
             "service_id" => 1,
             "shift_id" => 1,
             "status" => "completed",
@@ -56,7 +64,7 @@ class DatabaseSeeder extends Seeder
             "date" => "2021-10-10",
             "hour" => "11:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
-            "client_dni" => "14298158T",
+            "client_dni" => "50572123G",
             "service_id" => 2,
             "shift_id" => 1,
             "status" => "completed",
