@@ -99,36 +99,44 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $dni)
     {
+ 
         $validator = Validator::make($request->all(), [
-            'dni' => 'required|string|max:9',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
             'telf' => 'required|string|max:20',
             'email' => 'required|string|max:100',
         ]);
+    
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => 'Error en la validació de dades',
+                'errors' => $validator->errors()
             ], 422);
         }
-
+    
         try {
-            $client = Client::findOrFail($id);
+          
+            $client = Client::where('dni', $dni)->firstOrFail();
+    
+        
             $client->update($request->all());
+    
             return response()->json([
                 'status' => true,
+                'client' => $client,
                 'message' => 'Client actualitzat amb exit'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error al actualitzar el client',
+                'message' => 'Error al actualitzar el client: ' . $e->getMessage()
             ], 500);
         }
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -145,7 +153,7 @@ class ClientController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error al eliminar el client',
+                'message' => 'Error al eliminar el client: ' . $e->getMessage()
             ], 500);
         }
     }
