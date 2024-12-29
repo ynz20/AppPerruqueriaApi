@@ -15,7 +15,7 @@ class ReservationController extends Controller
     {
         try{
 
-            $reservations = Reservation::with(['user', 'client'])->get();
+            $reservations = Reservation::with(['user', 'client', 'service'])->get();
        
 
             return response()->json([
