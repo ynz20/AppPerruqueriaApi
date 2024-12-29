@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         Service::factory(3)->create();
 
         Reservation::factory()->create([
-            "date" => "2021-10-10",
+            "date" => "2024-12-28",
             "hour" => "10:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Reservation::factory()->create([
-            "date" => "2021-10-10",
+            "date" => "2024-12-28",
             "hour" => "11:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
@@ -69,5 +69,7 @@ class DatabaseSeeder extends Seeder
             "shift_id" => 1,
             "status" => "completed",
         ]);
+
+        
     }
 }

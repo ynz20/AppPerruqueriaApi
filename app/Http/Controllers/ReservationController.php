@@ -14,11 +14,14 @@ class ReservationController extends Controller
     public function index()
     {
         try{
-            $reservations = Reservation::all();
+
+            $reservations = Reservation::with(['user', 'client'])->get();
+       
+
             return response()->json([
                 'status' => 'true',
                 'reservations' => $reservations,
-                'message' => 'Llista de reserves'
+                'message' => 'Llista de reserves',
             ],200);
         }catch (\Exception $e){
             return response()->json([
