@@ -17,4 +17,16 @@ class Reservation extends Model
         'shift_id',
         'status',
     ];
+
+        // Relación con Worker
+        public function user()
+        {
+            return $this->belongsTo(User::class, 'worker_dni', 'dni');
+        }
+    
+        // Relación con Client
+        public function client()
+        {
+            return $this->belongsTo(Client::class, 'client_dni', 'dni');
+        }
 }
