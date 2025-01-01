@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
 
         Reservation::factory()->create([
             "date" => "2025-01-01",
-            "hour" => "10:00:00", // Asegúrate de que sea un valor válido
+            "hour" => "10:00",
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
             "service_id" => 1,
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
 
         Reservation::factory()->create([
             "date" => "2025-01-02",
-            "hour" => "11:00:00", // Asegúrate de que sea un valor válido
+            "hour" => "11:00",
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
             "service_id" => 2,
