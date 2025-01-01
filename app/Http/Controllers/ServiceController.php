@@ -48,7 +48,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'estimation' => ['required', 'regex:/^([01]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/'],
+            'estimation' => 'required|integer', 
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -113,8 +113,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            // Validar format d'hora amb regex
-            'estimation' => ['required', 'regex:/^([01]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/'],
+            'estimation' => 'required|integer', 
         ]);
         if ($validator->fails()) {
             return response()->json([
