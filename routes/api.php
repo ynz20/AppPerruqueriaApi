@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //Rutes Públiques
@@ -22,6 +23,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Ruta per consultar els usuaris
+    Route::apiResource('users', UserController::class);
     // Ruta per consultar els clients
     Route::apiResource('clients', ClientController::class);
     // Ruta per consultar els torns
