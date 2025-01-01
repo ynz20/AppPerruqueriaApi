@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ServiceController extends Controller
 {
@@ -41,11 +42,13 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'estimation' => 'required|numeric',
+            'estimation' => ['required', 'regex:/^([01]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -74,14 +77,14 @@ class ServiceController extends Controller
      */
     public function show(string $id)
     {
-        try{
+        try {
             $service = Service::findOrfail($id);
             return response()->json([
                 'status' => true,
-                'data' => $service,
+                'service' => $service,
                 'message' => 'Servei trobat'
             ], 200);
-        }catch(\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => ' Servei no trobat'
@@ -102,11 +105,16 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->merge([
+            'price' => floatval($request->input('price')), // Convertir a float per poder validar
+        ]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'estimation' => 'required|numeric',
+            // Validar format d'hora amb regex
+            'estimation' => ['required', 'regex:/^([01]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/'],
         ]);
         if ($validator->fails()) {
             return response()->json([

@@ -18,15 +18,21 @@ class Reservation extends Model
         'status',
     ];
 
-        // Relación con Worker
-        public function user()
-        {
-            return $this->belongsTo(User::class, 'worker_dni', 'dni');
-        }
-    
-        // Relación con Client
-        public function client()
-        {
-            return $this->belongsTo(Client::class, 'client_dni', 'dni');
-        }
+    // Relació amb Worker
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'worker_dni', 'dni');
+    }
+
+    // Relació amb Client
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_dni', 'dni');
+    }
+
+    // Relació amb Service
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }
