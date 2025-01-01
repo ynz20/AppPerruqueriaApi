@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         Service::factory(3)->create();
 
         Reservation::factory()->create([
-            "date" => "2024-12-28",
+            "date" => "2025-01-01",
             "hour" => "10:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Reservation::factory()->create([
-            "date" => "2024-12-28",
+            "date" => "2025-01-02",
             "hour" => "11:00:00", // Asegúrate de que sea un valor válido
             "worker_dni" => "20572143T",
             "client_dni" => "50572123G",
