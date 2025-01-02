@@ -20,7 +20,13 @@ class AuthController extends Controller
             'nick' => 'required|string|max:50|unique:users',
             'telf' => 'required|string|max:20',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:5'
+            'password' => 'required|confirmed|min:8'
+        ],[
+            'nick.unique' => "El nom d'usuari ja està en ús",
+            'dni.unique' => 'El DNI ja està en ús',
+            'email.unique' => 'El correu ja està en ús',
+            'telf.unique' => 'El telèfon ja està en ús',
+            'password.min' => 'La contrasenya ha de tenir com a mínim 8 caràcters',
         ]);
 
         if ($validator->fails()) {
@@ -62,14 +68,14 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'token' => $token,
-                'message' => 'Usuari loguejat',
+                'message' => 'Benvingut',
                 'user_id' => $user->id,
                 'role' =>  $user->is_admin,
             ],200);
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Usuari no loguejat',
+                'message' => 'Credencials Incorrectes',
             ],401);
         }
     }
