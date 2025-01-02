@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
     
-
         User::factory()->create([
             'name' => 'Luis',
             'surname' => 'Perez',
@@ -36,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'is_admin' => 0,
         ]);
 
-        Client::factory(3)->create();
+        Client::factory(20)->create();
 
         Client::factory()->create([
             'dni' => '50572123G',
