@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Service;
 
 class ReservationController extends Controller
 {
@@ -13,21 +14,21 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        try{
+        try {
 
             $reservations = Reservation::with(['user', 'client', 'service'])->get();
-       
+
 
             return response()->json([
                 'status' => 'true',
                 'reservations' => $reservations,
                 'message' => 'Llista de reserves',
-            ],200);
-        }catch (\Exception $e){
+            ], 200);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -47,8 +48,8 @@ class ReservationController extends Controller
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
             'hour' => 'required|string|max:8',
-            'worker_dni' => 'required|string|max:9',
-            'client_dni' => 'required|string|max:9',
+            'worker_dni' => 'required|string|max:10',
+            'client_dni' => 'required|string|max:10',
             'service_id' => 'required|integer',
             'shift_id' => 'required|integer',
             'status' => 'required|string|max:20',
@@ -57,10 +58,52 @@ class ReservationController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Error en la validació de dades',
+                'errors' => $validator->errors()
             ], 422);
         }
 
         try {
+            // Obtener la estimación del servicio
+            $service = Service::find($request->service_id);
+
+            if (!$service) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El servei seleccionat no existeix.',
+                ], 404);
+            }
+
+            $serviceEstimation = $service->estimation; // Minutos de estimación
+
+            // Calcular hora de inicio y fin
+            $startTime = new \DateTime($request->hour);
+            $endTime = clone $startTime;
+            $endTime->modify('+' . $serviceEstimation . ' minutes');
+
+            // Obtener todas las reservas del mismo día y trabajador
+            $reservations = Reservation::where('date', $request->date)
+                ->where('worker_dni', $request->worker_dni)
+                ->get();
+
+            // Verificar conflictos manualmente
+            foreach ($reservations as $reservation) {
+                $reservationStartTime = new \DateTime($reservation->hour);
+                $reservationEndTime = clone $reservationStartTime;
+                $reservationService = Service::find($reservation->service_id);
+                $reservationEndTime->modify('+' . $reservationService->estimation . ' minutes');
+
+                // Comprobar solapamiento
+                if (
+                    $startTime < $reservationEndTime &&
+                    $endTime > $reservationStartTime
+                ) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'No es pot realitzar la reserva. La franja horària està ocupada.',
+                    ], 409);
+                }
+            }
+
             $reservations = Reservation::create($request->all());
             return response()->json([
                 'status' => true,
@@ -80,18 +123,18 @@ class ReservationController extends Controller
      */
     public function show(string $id)
     {
-        try{
+        try {
             $reservation = Reservation::find($id);
             return response()->json([
                 'status' => 'true',
                 'reservation' => $reservation,
                 'message' => 'Reserva trobada'
-            ],200);
-        }catch (\Exception $e){
+            ], 200);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Reserva no trobada'
-            ],500);
+            ], 500);
         }
     }
 
