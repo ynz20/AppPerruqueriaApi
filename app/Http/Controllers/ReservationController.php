@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Service;
+use App\Models\User;
 
 class ReservationController extends Controller
 {
@@ -199,6 +200,84 @@ class ReservationController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Error al eliminar la reserva',
+            ], 500);
+        }
+    }
+
+    public function getAvailableWorkers(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date',
+            'hour' => 'required|date_format:H:i',
+            'service_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $service = Service::find($request->service_id);
+
+            if (!$service) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El servei seleccionat no existeix.',
+                ], 404);
+            }
+
+            $startTime = new \DateTime($request->date . ' ' . $request->hour);
+            $endTime = clone $startTime;
+            $endTime->modify('+' . $service->estimation . ' minutes');
+
+            $unavailableWorkers = Reservation::where('date', $request->date)
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->whereBetween('hour', [$startTime->format('H:i'), $endTime->format('H:i')])
+                        ->orWhereRaw('? BETWEEN hour AND DATE_ADD(hour, INTERVAL ? MINUTE)', [
+                            $startTime->format('H:i'),
+                            $endTime->format('H:i'),
+                        ]);
+                })
+                ->pluck('worker_dni');
+
+            $availableWorkers = User::whereNotIn('dni', $unavailableWorkers)->get();
+
+            return response()->json([
+                'status' => true,
+                'workers' => $availableWorkers,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error al obtenir els treballadors disponibles.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getReservationsByClient($dni)
+    {
+        try {
+            $reservations = Reservation::where('client_dni', $dni)->get();
+
+            if ($reservations->isEmpty()) {
+                return response()->json([
+                    'message' => 'No s\'han trobat reserves per aquest client.'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' =>  true,
+                'reservations' =>$reservations
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hi ha hagut un problema en carregar les reserves.',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
