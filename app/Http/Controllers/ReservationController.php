@@ -63,7 +63,6 @@ class ReservationController extends Controller
         }
 
         try {
-            // Obtener la estimación del servicio
             $service = Service::find($request->service_id);
 
             if (!$service) {
@@ -73,26 +72,22 @@ class ReservationController extends Controller
                 ], 404);
             }
 
-            $serviceEstimation = $service->estimation; // Minutos de estimación
+            $serviceEstimation = $service->estimation;
 
-            // Calcular hora de inicio y fin
             $startTime = new \DateTime($request->hour);
             $endTime = clone $startTime;
             $endTime->modify('+' . $serviceEstimation . ' minutes');
 
-            // Obtener todas las reservas del mismo día y trabajador
             $reservations = Reservation::where('date', $request->date)
                 ->where('worker_dni', $request->worker_dni)
                 ->get();
 
-            // Verificar conflictos manualmente
             foreach ($reservations as $reservation) {
                 $reservationStartTime = new \DateTime($reservation->hour);
                 $reservationEndTime = clone $reservationStartTime;
                 $reservationService = Service::find($reservation->service_id);
                 $reservationEndTime->modify('+' . $reservationService->estimation . ' minutes');
 
-                // Comprobar solapamiento
                 if (
                     $startTime < $reservationEndTime &&
                     $endTime > $reservationStartTime
@@ -199,6 +194,30 @@ class ReservationController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Error al eliminar la reserva',
+            ], 500);
+        }
+    }
+
+    public function getReservationsByClient($dni)
+    {
+        try {
+            $reservations = Reservation::where('client_dni', $dni)->get();
+
+            if ($reservations->isEmpty()) {
+                return response()->json([
+                    'message' => 'No s\'han trobat reserves per aquest client.'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' =>  true,
+                'reservations' => $reservations
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hi ha hagut un problema en carregar les reserves.',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
