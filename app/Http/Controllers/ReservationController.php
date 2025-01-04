@@ -257,4 +257,28 @@ class ReservationController extends Controller
             ], 500);
         }
     }
+
+    public function getReservationsByClient($dni)
+    {
+        try {
+            $reservations = Reservation::where('client_dni', $dni)->get();
+
+            if ($reservations->isEmpty()) {
+                return response()->json([
+                    'message' => 'No s\'han trobat reserves per aquest client.'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' =>  true,
+                'reservations' =>$reservations
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hi ha hagut un problema en carregar les reserves.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
