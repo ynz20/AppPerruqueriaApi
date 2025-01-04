@@ -33,6 +33,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('services', ServiceController::class);
     //ruta per consultar les reserves
     Route::apiResource('reservations', ReservationController::class);
+
+    // Ruta per obtenir els treballadors disponibles
+    Route::post('/workers/available', [ReservationController::class, 'getAvailableWorkers'])->name('workers.available');
+
+    // Ruta per obtenir les reserves d'un client
+    Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
 });
-
-
