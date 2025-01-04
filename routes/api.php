@@ -33,6 +33,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('services', ServiceController::class);
     //ruta per consultar les reserves
     Route::apiResource('reservations', ReservationController::class);
+
+    Route::apiResource("reservations/client/{dni}", [ReservationController::class, "getReservationsByClient"]);
 });
 
 
