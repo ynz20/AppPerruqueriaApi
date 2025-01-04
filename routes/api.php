@@ -37,6 +37,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Ruta per obtenir els treballadors disponibles
     Route::post('/workers/available', [ReservationController::class, 'getAvailableWorkers'])->name('workers.available');
 
-    // Ruta per obtenir les reserves d'un client
+    // Ruta per obtenir les reserves d'un client específic
     Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
 });
