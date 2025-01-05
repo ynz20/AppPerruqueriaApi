@@ -39,4 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Ruta per obtenir les reserves d'un client específic
     Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
+
+    //Ruta per actualitzar l'estat de la reserva
+    Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
+
 });

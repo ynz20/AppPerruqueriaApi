@@ -229,6 +229,7 @@ class ReservationController extends Controller
             $endTime->modify('+' . $service->estimation . ' minutes');
 
             $unavailableWorkers = Reservation::where('date', $request->date)
+                ->where('status', 'pending')
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->whereBetween('hour', [$startTime->format('H:i'), $endTime->format('H:i')])
                         ->orWhereRaw('? BETWEEN hour AND DATE_ADD(hour, INTERVAL ? MINUTE)', [
@@ -268,13 +269,46 @@ class ReservationController extends Controller
                 'status' =>  true,
 
 
-                'reservations' =>$reservations
+                'reservations' => $reservations
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Hi ha hagut un problema en carregar les reserves.',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error en la validació de dades',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $reservation = Reservation::findOrFail($id);
+            $reservation->status = $request->status;
+            $reservation->save();
+
+            return response()->json([
+                'status' => true,
+                'reservation' => $reservation,
+                'message' => 'Estat de la reserva actualitzat correctament',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error al actualitzar l\'estat de la reserva',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
