@@ -229,7 +229,7 @@ class ReservationController extends Controller
             $endTime->modify('+' . $service->estimation . ' minutes');
 
             $unavailableWorkers = Reservation::where('date', $request->date)
-                ->where('status', 'pending')
+                ->whereIn('status', ['pending', 'completed'])
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->whereBetween('hour', [$startTime->format('H:i'), $endTime->format('H:i')])
                         ->orWhereRaw('? BETWEEN hour AND DATE_ADD(hour, INTERVAL ? MINUTE)', [

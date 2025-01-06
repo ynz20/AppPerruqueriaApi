@@ -60,24 +60,45 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->checkUserAuth();
-        //Valdiacio de dades
-        //comprovacio del login
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
+
+        // Validar credencials
+        $credentials = $request->only(['email', 'nick', 'password']);
+        $validator = Validator::make($credentials, [
+            'password' => 'required|string',
+            'email' => 'nullable|email',
+            'nick' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+        // Comprovar si existeix un usuari amb el *nick* o el correu electrònic
+        $user = User::where(function ($query) use ($request) {
+            $query->where('email', $request->email)
+                ->orWhere('nick', $request->nick);
+        })->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
             $token = $user->createToken('Api-Token')->plainTextToken;
+
             return response()->json([
                 'status' => true,
                 'token' => $token,
                 'message' => 'Benvingut',
                 'user_id' => $user->id,
-                'role' =>  $user->is_admin,
-            ],200);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Credencials Incorrectes',
-            ],401);
+                'role' => $user->is_admin,
+            ], 200);
         }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Credencials Incorrectes',
+        ], 401);
     }
 
     
