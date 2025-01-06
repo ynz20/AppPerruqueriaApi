@@ -267,8 +267,6 @@ class ReservationController extends Controller
 
             return response()->json([
                 'status' =>  true,
-
-
                 'reservations' => $reservations
             ], 200);
         } catch (\Exception $e) {
