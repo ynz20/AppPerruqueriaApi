@@ -262,7 +262,7 @@ class ReservationController extends Controller
             if ($reservations->isEmpty()) {
                 return response()->json([
                     'message' => 'No s\'han trobat reserves per aquest client.'
-                ], 404);
+                ], 200);
             }
 
             return response()->json([
