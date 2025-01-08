@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Reservation;
 use App\Models\Service;
 use App\Models\Shift;
+use App\Models\Product;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -67,6 +68,34 @@ class DatabaseSeeder extends Seeder
             "service_id" => 2,
             "shift_id" => 1,
             "status" => "completed",
+        ]);
+
+        Product::create([
+            'name' => 'Xampú Reparador',
+            'description' => 'Xampú ideal per a cabells danyats. Repara i enforteix.',
+            'price' => 12.99,
+            'stock' => 50,
+        ]);
+
+        Product::create([
+            'name' => 'Acondicionador Nutritiu',
+            'description' => 'Acondicionador que aporta suavitat i brillantor al cabell.',
+            'price' => 14.50,
+            'stock' => 30,
+        ]);
+
+        Product::create([
+            'name' => 'Laca Fijadora',
+            'description' => 'Laca professional per a una fixació duradora.',
+            'price' => 8.75,
+            'stock' => 20,
+        ]);
+
+        Product::create([
+            'name' => 'Cera per al Cabell',
+            'description' => 'Cera modeladora amb efecte mat.',
+            'price' => 10.00,
+            'stock' => 25,
         ]);
 
         

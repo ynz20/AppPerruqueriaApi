@@ -7,6 +7,7 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 //Rutes Públiques
@@ -43,4 +44,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta per actualitzar l'estat de la reserva
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
 
+    // Ruta per consultar els productes
+    Route::apiResource('products', ProductController::class);
+
+    // Rutes per modificació de stock de producte
+    Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
+    Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
 });
