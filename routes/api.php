@@ -46,6 +46,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta per actualitzar l'estat de la reserva
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
 
+
+    //Ruta per afegir valoració i comentari a una reserva confirmada
+    Route::put('/reservations/{id}/rate', [ReservationController::class, 'rateReservation']);
+
+    // Ruta per consultar els productes
+    Route::apiResource('products', ProductController::class);
+
     // Rutes per modificació de stock de producte
     Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
     Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
