@@ -16,6 +16,8 @@ class Reservation extends Model
         'service_id',
         'shift_id',
         'status',
+        'rating',
+        'comment',
     ];
 
     // Relació amb Worker

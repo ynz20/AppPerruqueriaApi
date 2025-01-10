@@ -310,4 +310,41 @@ class ReservationController extends Controller
             ], 500);
         }
     }
+
+    public function rateReservation(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error en la validació de dades',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $reservation = Reservation::findOrFail($id);
+
+
+            $reservation->rating = $request->rating;
+            $reservation->comment = $request->comment;
+            $reservation->save();
+
+            return response()->json([
+                'status' => true,
+                'reservation' => $reservation,
+                'message' => 'Valoració afegida correctament',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error al afegir la valoració',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
