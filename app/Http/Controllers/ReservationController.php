@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\Shift;
 
 class ReservationController extends Controller
 {
@@ -52,7 +53,7 @@ class ReservationController extends Controller
             'worker_dni' => 'required|string|max:10',
             'client_dni' => 'required|string|max:10',
             'service_id' => 'required|integer',
-            'shift_id' => 'required|integer',
+            'shift_id' => 'nullable|integer|exists:shifts,id',
             'status' => 'required|string|max:20',
         ]);
         if ($validator->fails()) {
@@ -294,6 +295,21 @@ class ReservationController extends Controller
 
         try {
             $reservation = Reservation::findOrFail($id);
+            if ($request->status === 'completed') {
+                // Buscar el turno que tenga end_time como null
+                $shift = Shift::whereNull('end_time')->first();
+
+                if ($shift) {
+                    // Asignar el turno a la reserva
+                    $reservation->shift_id = $shift->id;
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'No hi ha cap torn obert per assignar a aquesta reserva.',
+                    ], 400);
+                }
+            }
+
             $reservation->status = $request->status;
             $reservation->save();
 

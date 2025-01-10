@@ -60,6 +60,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Rutes per modificar el torn actiu
     Route::post('/turn', [ShiftController::class, 'toggleTurn']);
     Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']);
-
-
 });

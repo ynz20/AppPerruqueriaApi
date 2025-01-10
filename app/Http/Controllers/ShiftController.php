@@ -156,13 +156,13 @@ class ShiftController extends Controller
         try {
             // Buscar si hi ha un torn actiu (end_time NULL)
             $activeShift = Shift::whereNull('end_time')->first();
-    
+
             if ($activeShift) {
                 // Si hi ha un torn actiu, tancar-lo
                 $activeShift->update([
                     'end_time' => now(), // Hora actual per finalitzar el torn
                 ]);
-    
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Torn tancat correctament',
@@ -175,7 +175,7 @@ class ShiftController extends Controller
                     'end_time' => null,
                     'date' => now()->toDateString(),
                 ]);
-    
+
                 // Cridar al mètode store
                 return $this->store($request);
             }
@@ -189,19 +189,19 @@ class ShiftController extends Controller
     }
 
     public function getTurnStatus()
-{
-    try {
-        $activeShift = Shift::whereNull('end_time')->exists();
+    {
+        try {
+            $activeShift = Shift::whereNull('end_time')->exists();
 
-        return response()->json([
-            'status' => true,
-            'active' => $activeShift, // Retorna true si hi ha un torn actiu
-        ], 200);
-    } catch (\Throwable $th) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Error en obtenir l\'estat del torn: ' . $th->getMessage(),
-        ], 500);
+            return response()->json([
+                'status' => true,
+                'active' => $activeShift, // Retorna true si hi ha un torn actiu
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error en obtenir l\'estat del torn: ' . $th->getMessage(),
+            ], 500);
+        }
     }
-}
 }
