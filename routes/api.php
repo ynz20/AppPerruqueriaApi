@@ -10,7 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-//Rutes Públiques
+// Rutes públiques
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -18,46 +18,34 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Ruta per a l'autenticació
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Ruta per consultar els usuaris
-    Route::apiResource('users', UserController::class);
-    // Ruta per consultar els clients
+    // Rutes protegides per autenticació
     Route::apiResource('clients', ClientController::class);
-    // Ruta per consultar els torns
     Route::apiResource('shifts', ShiftController::class);
-    //Ruta per consultar els serveis
-    Route::apiResource('services', ServiceController::class);
-    //ruta per consultar les reserves
     Route::apiResource('reservations', ReservationController::class);
-    // Ruta per consultar els productes
     Route::apiResource('products', ProductController::class);
 
-    // Ruta per obtenir els treballadors disponibles
+    // Rutes per als treballadors
     Route::post('/workers/available', [ReservationController::class, 'getAvailableWorkers'])->name('workers.available');
 
-    // Ruta per obtenir les reserves d'un client específic
+    // Rutes per a reserves
     Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
-
-    //Ruta per actualitzar l'estat de la reserva
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
-
-
-    //Ruta per afegir valoració i comentari a una reserva confirmada
     Route::put('/reservations/{id}/rate', [ReservationController::class, 'rateReservation']);
-
-    // Ruta per consultar els productes
-    Route::apiResource('products', ProductController::class);
-
-    // Rutes per modificació de stock de producte
+    
+    // Rutes de productes
     Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
     Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
-
-    // Rutes per modificar el torn actiu
     Route::post('/turn', [ShiftController::class, 'toggleTurn']);
     Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']);
+});
+
+// Rutes només per a administradors (accés restringit)
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    // Rutes de serveis només accessibles per administradors
+    Route::apiResource('services', ServiceController::class);  
+    Route::apiResource('users', UserController::class);
 });
