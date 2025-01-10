@@ -76,13 +76,12 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $dni)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'nick' => 'required|string|max:100',
             'telf' => 'required|string|max:20',
-            'dni' => 'required|string|max:10',
             'surname' => 'required|string|max:100',
             'email' => 'required|string|max:100|email',
             'password' => 'string|max:100',
@@ -97,7 +96,7 @@ class UserController extends Controller
         }
 
         try {
-            $user = User::findOrFail($id);
+            $user = User::where('dni', $dni)->firstOrFail();
             $user->update($request->all());
             return response()->json([
                 'status' => true,
