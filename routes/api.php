@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('services', ServiceController::class);
     //ruta per consultar les reserves
     Route::apiResource('reservations', ReservationController::class);
+    // Ruta per consultar els productes
+    Route::apiResource('products', ProductController::class);
 
     // Ruta per obtenir els treballadors disponibles
     Route::post('/workers/available', [ReservationController::class, 'getAvailableWorkers'])->name('workers.available');
@@ -44,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta per actualitzar l'estat de la reserva
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
 
+
     //Ruta per afegir valoració i comentari a una reserva confirmada
     Route::put('/reservations/{id}/rate', [ReservationController::class, 'rateReservation']);
 
@@ -53,4 +56,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Rutes per modificació de stock de producte
     Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
     Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
+
+    // Rutes per modificar el torn actiu
+    Route::post('/turn', [ShiftController::class, 'toggleTurn']);
+    Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']);
+
+
 });
