@@ -35,17 +35,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
     Route::put('/reservations/{id}/rate', [ReservationController::class, 'rateReservation']);
-    
+
     // Rutes de productes
     Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
     Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
     Route::post('/turn', [ShiftController::class, 'toggleTurn']);
     Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']);
+
+    //Ruta per obtenir els serveis pel usuaris no admins per poder fer la reserva
+    Route::get('/services/pull', [ServiceController::class, 'getServices']);
+
+    //Ruta per obtenir els treballadors pel usuaris no admins per poder fer la reserva
+    Route::get('/users/pull', [UserController::class, 'getWorkers']);
+
+    // Permetre que qualsevol usuari accedeixi als mètodes show i update de UserController
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 });
 
 // Rutes només per a administradors (accés restringit)
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Rutes de serveis només accessibles per administradors
-    Route::apiResource('services', ServiceController::class);  
-    Route::apiResource('users', UserController::class);
+    Route::apiResource('services', ServiceController::class);
+
+    // Rutes de recursos per a usuaris (exceptuant show i update)
+    Route::apiResource('users', UserController::class)->except(['show', 'update']);
 });

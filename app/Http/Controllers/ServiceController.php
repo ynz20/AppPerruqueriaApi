@@ -48,7 +48,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'estimation' => 'required|integer', 
+            'estimation' => 'required|integer',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -113,7 +113,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'estimation' => 'required|integer', 
+            'estimation' => 'required|integer',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -154,6 +154,23 @@ class ServiceController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Error al eliminar el servei'
+            ], 500);
+        }
+    }
+
+    public function getServices()
+    {
+        try {
+            $services = Service::all();
+            return response()->json([
+                'status' => true,
+                'services' => $services,
+                'message' => 'Llista de serveis'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
             ], 500);
         }
     }
