@@ -40,7 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
     Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
     Route::post('/turn', [ShiftController::class, 'toggleTurn']);
-    Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']);
+    Route::get('/turn/status', [ShiftController::class, 'getTurnStatus']); 
 });
 
 // Rutes només per a administradors (accés restringit)
