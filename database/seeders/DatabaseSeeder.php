@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
             "service_id" => 1,
             "shift_id" => 1,
             "status" => "completed",
+            "rating" => 3
         ]);
 
         Reservation::factory()->create([
@@ -68,6 +69,7 @@ class DatabaseSeeder extends Seeder
             "service_id" => 2,
             "shift_id" => 1,
             "status" => "completed",
+            "rating" => 2
         ]);
 
         Product::create([

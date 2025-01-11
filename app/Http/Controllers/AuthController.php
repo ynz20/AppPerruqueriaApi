@@ -14,21 +14,46 @@ class AuthController extends Controller
     {
         $this->checkUserAuth();
         $validator = Validator::make($request->all(), [
-            'dni' => 'required|string|max:20|unique:users',
+            'dni' => 'required|string|max:20',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'nick' => 'required|string|max:50|unique:users',
+            'nick' => 'required|string|max:50',
             'telf' => 'required|string|max:20',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8'
-        ],[
-            'nick.unique' => "El nom d'usuari ja està en ús",
-            'dni.unique' => 'El DNI ja està en ús',
-            'email.unique' => 'El correu ja està en ús',
-            'telf.unique' => 'El telèfon ja està en ús',
-            'password.min' => 'La contrasenya ha de tenir com a mínim 8 caràcters',
         ]);
 
+        if (User::where('dni', $request->dni)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 1,
+                'message' => 'Aquest DNI ja existeix'
+            ]);
+        }
+
+        if (User::where('nick', $request->nick)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 2,
+                'message' => "Aquest nom d'usuari ja existeix"
+            ]);
+        }
+
+        if (User::where('email', $request->email)->exists()){
+            return response()->json([
+                'success' => false,
+                'id' => 3,
+                'message' => "Aquest email ja existeix"
+            ]);
+        }
+
+        if (User::where('telf', $request->telf)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 4,
+                'message' => "Aquest teléfon ja existeix"
+            ]);
+        }
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
