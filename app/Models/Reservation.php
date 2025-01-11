@@ -37,4 +37,14 @@ class Reservation extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function getServiceNameAttribute()
+    {
+        return $this->service->name ?? null;
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->service ? $this->service->price : null;
+    }
 }
