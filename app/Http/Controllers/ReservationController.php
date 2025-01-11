@@ -20,7 +20,6 @@ class ReservationController extends Controller
 
             $reservations = Reservation::with(['user', 'client', 'service'])->get();
 
-
             return response()->json([
                 'status' => 'true',
                 'reservations' => $reservations,

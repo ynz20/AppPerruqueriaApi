@@ -14,7 +14,15 @@ class ShiftController extends Controller
     public function index()
     {
         try {
-            $shifts = Shift::with('reservations')->get();
+            
+            $shifts = Shift::with([
+                'reservations.service', 
+                'reservations.client', 
+                'reservations.user' 
+            ])
+            ->orderBy('id', 'desc')
+            ->get();
+    
             return response()->json([
                 'status' => 'true',
                 'shifts' => $shifts,
@@ -27,6 +35,8 @@ class ShiftController extends Controller
             ], 500);
         }
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.
