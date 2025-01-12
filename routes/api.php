@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Rutes per a reserves
     Route::get('reservations/client/{dni}', [ReservationController::class, "getReservationsByClient"]);
+    Route::get('reservations/worker/{dni}', [ReservationController::class, "getReservationsByWorker"]);
     Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
     Route::put('/reservations/{id}/rate', [ReservationController::class, 'rateReservation']);
 

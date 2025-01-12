@@ -45,22 +45,49 @@ class ClientController extends Controller
             'dni' => 'required|string|max:9',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'telf' => 'required|string|max:20',
-            'email' => 'required|string|max:100',
+            'telf' => 'required|string|max:20|unique:clients,telf', 
+            'email' => 'required|string|max:100|email|unique:clients,email',
         ]);
+
+        if (Client::where('dni', $request->dni)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 1,
+                'message' => 'Aquest DNI ja existeix'
+            ]);
+        }
+
+        if (Client::where('telf', $request->telf)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 2,
+                'message' => 'Aquest telèfon ja existeix'
+            ]);
+        }
+
+        if (Client::where('email', $request->email)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 3,
+                'message' => 'Aquest email ja existeix'
+            ]);
+        }
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => 'Error en la validació de dades',
+                'errors' => $validator->errors(),
             ], 422);
         }
-
+    
         try {
-            $clients = Client::create($request->all());
+            $client = Client::create($request->all());
             return response()->json([
                 'status' => true,
-                'message' => 'Client creat amb exit'
-            ],201);
+                'message' => 'Client creat amb exit',
+                'client' => $client,
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -68,6 +95,7 @@ class ClientController extends Controller
             ], 500);
         }
     }
+    
 
     /**
      * Display the specified resource.
@@ -110,6 +138,22 @@ class ClientController extends Controller
             'email' => 'required|string|max:100',
         ]);
     
+        if (Client::where('telf', $request->telf)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 1,
+                'message' => 'Aquest telèfon ja existeix'
+            ]);
+        }
+
+        if (Client::where('email', $request->email)->exists()) {
+            return response()->json([
+                'success' => false,
+                'id' => 2,
+                'message' => 'Aquest email ja existeix'
+            ]);
+        }
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,

@@ -278,6 +278,30 @@ class ReservationController extends Controller
         }
     }
 
+    public function getReservationsByWorker($dni)
+    {
+        try {
+            $reservations = Reservation::where('worker_dni', $dni)->get();
+
+            if ($reservations->isEmpty()) {
+                return response()->json([
+                    'message' => 'No s\'han trobat reserves per aquest treballador.'
+                ], 200);
+            }
+
+            return response()->json([
+                'status' =>  true,
+                'reservations' => $reservations
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hi ha hagut un problema en carregar les reserves.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function updateStatus(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
