@@ -537,7 +537,7 @@ class ReservationController extends Controller
     {
         try {
             $reservations = Reservation::where('client_dni', $dni)
-                ->with(['user', 'client', 'service'])
+                ->with(['client', 'service'])
                 ->get();
 
             if ($reservations->isEmpty()) {
