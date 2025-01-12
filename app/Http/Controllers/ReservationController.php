@@ -257,16 +257,18 @@ class ReservationController extends Controller
     public function getReservationsByClient($dni)
     {
         try {
-            $reservations = Reservation::where('client_dni', $dni)->get();
-
+            $reservations = Reservation::where('client_dni', $dni)
+                ->with(['user', 'client', 'service'])
+                ->get();
+    
             if ($reservations->isEmpty()) {
                 return response()->json([
                     'message' => 'No s\'han trobat reserves per aquest client.'
                 ], 200);
             }
-
+    
             return response()->json([
-                'status' =>  true,
+                'status' => true,
                 'reservations' => $reservations
             ], 200);
         } catch (\Exception $e) {
@@ -277,11 +279,14 @@ class ReservationController extends Controller
             ], 500);
         }
     }
+    
 
     public function getReservationsByWorker($dni)
     {
         try {
-            $reservations = Reservation::where('worker_dni', $dni)->get();
+            $reservations = Reservation::where('worker_dni', $dni)                
+            ->with(['user', 'client', 'service'])
+            ->get();;
 
             if ($reservations->isEmpty()) {
                 return response()->json([
