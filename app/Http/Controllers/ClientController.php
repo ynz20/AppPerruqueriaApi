@@ -130,7 +130,6 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $dni)
     {
- 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
@@ -138,22 +137,6 @@ class ClientController extends Controller
             'email' => 'required|string|max:100',
         ]);
     
-        if (Client::where('telf', $request->telf)->exists()) {
-            return response()->json([
-                'success' => false,
-                'id' => 1,
-                'message' => 'Aquest telèfon ja existeix'
-            ]);
-        }
-
-        if (Client::where('email', $request->email)->exists()) {
-            return response()->json([
-                'success' => false,
-                'id' => 2,
-                'message' => 'Aquest email ja existeix'
-            ]);
-        }
-
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -163,16 +146,30 @@ class ClientController extends Controller
         }
     
         try {
-          
             $client = Client::where('dni', $dni)->firstOrFail();
     
-        
+            if (Client::where('telf', $request->telf)->where('dni', '!=', $dni)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'id' => 1,
+                    'message' => 'Aquest telèfon ja existeix'
+                ]);
+            }
+
+            if (Client::where('email', $request->email)->where('dni', '!=', $dni)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'id' => 2,
+                    'message' => 'Aquest email ja existeix'
+                ]);
+            }
+
             $client->update($request->all());
     
             return response()->json([
                 'status' => true,
                 'client' => $client,
-                'message' => 'Client actualitzat amb exit'
+                'message' => 'Client actualitzat amb èxit'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -181,6 +178,7 @@ class ClientController extends Controller
             ], 500);
         }
     }
+    
     
 
     /**
