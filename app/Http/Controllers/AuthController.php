@@ -10,6 +10,45 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"auth"},
+     *     summary="Register a new user",
+     *     description="Creates a new user account and returns an API token.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="dni", type="string", example="12345678X"),
+     *             @OA\Property(property="name", type="string", example="John"),
+     *             @OA\Property(property="surname", type="string", example="Doe"),
+     *             @OA\Property(property="nick", type="string", example="johndoe"),
+     *             @OA\Property(property="telf", type="string", example="123456789"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *             @OA\Property(property="password", type="string", example="StrongPassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="StrongPassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+     *             @OA\Property(property="message", type="string", example="Usuari registrat correctament"),
+     *             @OA\Property(property="token", type="string", example="api_token_string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function register(Request $request)
     {
         $this->checkUserAuth();
@@ -82,6 +121,41 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"auth"},
+     *     summary="User login",
+     *     description="Authenticates a user using email or nickname and password.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *             @OA\Property(property="nick", type="string", example="johndoe"),
+     *             @OA\Property(property="password", type="string", example="StrongPassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="token", type="string", example="api_token_string"),
+     *             @OA\Property(property="message", type="string", example="Benvingut"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="role", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Credencials Incorrectes")
+     *         )
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
         $this->checkUserAuth();
@@ -126,13 +200,23 @@ class AuthController extends Controller
         ], 401);
     }
 
-    
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     tags={"auth"},
+     *     summary="User logout",
+     *     description="Logs out the currently authenticated user.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Successfully logged out")
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request)
-
     {
-
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Successfully logged out']);
