@@ -6,11 +6,38 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
-
+/**
+ * @OA\Schema(
+ *     schema="Product",
+ *     type="object",
+ *     title="Product",
+ *     description="Product model schema",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Laptop"),
+ *     @OA\Property(property="description", type="string", example="High-performance laptop"),
+ *     @OA\Property(property="price", type="number", format="float", example=999.99),
+ *     @OA\Property(property="stock", type="integer", example=50),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-01-01T00:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-01-01T00:00:00Z")
+ * )
+ */
 class ProductController extends Controller
 {
     /**
-     * Mostrar una llista de productes.
+     * @OA\Get(
+     *     path="/products",
+     *     tags={"Products"},
+     *     summary="Retrieve all products",
+     *     description="Returns a list of all available products",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Product")
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -29,8 +56,31 @@ class ProductController extends Controller
         }
     }
 
+
     /**
-     * Crear un nou producte.
+     * @OA\Post(
+     *     path="/products",
+     *     tags={"Products"},
+     *     summary="Create a new product",
+     *     description="Adds a new product to the system",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Product created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation error")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -64,7 +114,32 @@ class ProductController extends Controller
     }
 
     /**
-     * Mostrar un producte concret.
+     * @OA\Get(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     summary="Retrieve a specific product",
+     *     description="Returns a product by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Product ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Product not found")
+     *         )
+     *     )
+     * )
      */
     public function show(string $id)
     {
@@ -84,7 +159,36 @@ class ProductController extends Controller
     }
 
     /**
-     * Actualitzar un producte concret.
+     * @OA\Put(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     summary="Update a product",
+     *     description="Updates the details of a specific product",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Product ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Product not found")
+     *         )
+     *     )
+     * )
      */
     public function update(Request $request, string $id)
     {
@@ -119,7 +223,35 @@ class ProductController extends Controller
     }
 
     /**
-     * Eliminar un producte concret.
+     * @OA\Delete(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     summary="Delete a product",
+     *     description="Deletes a product from the system",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Product ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Product deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Product not found")
+     *         )
+     *     )
+     * )
      */
     public function destroy(string $id)
     {

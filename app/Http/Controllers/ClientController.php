@@ -5,10 +5,36 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Schema(
+ *     schema="Client",
+ *     type="object",
+ *     title="Client",
+ *     description="Client model schema",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", example="johndoe@example.com"),
+ *     @OA\Property(property="phone", type="string", example="123456789"),
+ *     @OA\Property(property="address", type="string", example="123 Main St")
+ * )
+ */
 class ClientController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/clients",
+     *     summary="Get all clients",
+     *     description="Returns a list of all available clients",
+     *     tags={"Clients"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Client")
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -37,7 +63,21 @@ class ClientController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/clients",
+     *     summary="Create a new client",
+     *     description="Adds a new client to the system",
+     *     tags={"Clients"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Client")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Client created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Client")
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -98,7 +138,28 @@ class ClientController extends Controller
     
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/clients/{id}",
+     *     summary="Get a client",
+     *     description="Returns information about a specific client",
+     *     tags={"Clients"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Client ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Client")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Client not found"
+     *     )
+     * )
      */
     public function show(string $id)
     {
@@ -126,7 +187,32 @@ class ClientController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *     path="/clients/{id}",
+     *     summary="Update a client",
+     *     description="Updates the information of a specific client",
+     *     tags={"Clients"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Client ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Client")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Client updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Client")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Client not found"
+     *     )
+     * )
      */
     public function update(Request $request, string $dni)
     {
@@ -182,7 +268,27 @@ class ClientController extends Controller
     
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Delete(
+     *     path="/clients/{id}",
+     *     summary="Delete a client",
+     *     description="Deletes a client from the system",
+     *     tags={"Clients"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Client ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Client deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Client not found"
+     *     )
+     * )
      */
     public function destroy(string $dni)
     {

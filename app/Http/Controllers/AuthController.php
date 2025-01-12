@@ -8,6 +8,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+
+
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     title="User",
+ *     description="User model schema",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="dni", type="string", example="12345678X"),
+ *     @OA\Property(property="name", type="string", example="John"),
+ *     @OA\Property(property="surname", type="string", example="Doe"),
+ *     @OA\Property(property="nick", type="string", example="johndoe"),
+ *     @OA\Property(property="telf", type="string", example="123456789"),
+ *     @OA\Property(property="email", type="string", example="johndoe@example.com"),
+ *     @OA\Property(property="is_admin", type="boolean", example=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-01-01T00:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-01-01T00:00:00Z")
+ * )
+ */
+
 class AuthController extends Controller
 {
     /**

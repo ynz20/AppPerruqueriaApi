@@ -3,15 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/users",
+     *     tags={"Users"},
+     *     summary="Retrieve all users",
+     *     description="Returns a list of all users.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="users",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/User")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Llista d'usuaris")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error retrieving users",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Detailed error message")
+     *         )
+     *     )
+     * )
      */
+
     public function index()
     {
         try {
@@ -46,8 +74,39 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/users/{id}",
+     *     tags={"Users"},
+     *     summary="Retrieve a specific user",
+     *     description="Fetches a user by their ID.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to retrieve",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="message", type="string", example="Usuari trobat")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Usuari no trobat")
+     *         )
+     *     )
+     * )
      */
+
     public function show(string $id)
     {
         try {
@@ -74,8 +133,59 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *     path="/users/{dni}",
+     *     tags={"Users"},
+     *     summary="Update a user",
+     *     description="Updates an existing user with the provided data.",
+     *     @OA\Parameter(
+     *         name="dni",
+     *         in="path",
+     *         description="DNI of the user to update",
+     *         required=true,
+     *         @OA\Schema(type="string", example="12345678X")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="John", description="First name of the user"),
+     *             @OA\Property(property="surname", type="string", example="Doe", description="Last name of the user"),
+     *             @OA\Property(property="nick", type="string", example="johndoe", description="Nickname of the user"),
+     *             @OA\Property(property="telf", type="string", example="123456789", description="Telephone number of the user"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="Email address of the user"),
+     *             @OA\Property(property="password", type="string", example="StrongPassword123", description="Password of the user")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="data", ref="#/components/schemas/User"),
+     *             @OA\Property(property="message", type="string", example="Usuari actualitzat correctament")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error en la validació de dades"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error updating user",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error al actualitzar l'usuari")
+     *         )
+     *     )
+     * )
      */
+
     public function update(Request $request, string $dni)
     {
         $validator = Validator::make($request->all(), [
@@ -112,14 +222,41 @@ class UserController extends Controller
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
     }
 
+    /**
+     * @OA\Get(
+     *     path="/users/workers",
+     *     tags={"Users"},
+     *     summary="Get all users (workers)",
+     *     description="Returns a list of all users in the system.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="users",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/User")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Llista d'usuaris")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error retrieving users",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Detailed error message")
+     *         )
+     *     )
+     * )
+     */
     public function getWorkers()
     {
         try {
