@@ -129,7 +129,7 @@ class AuthController extends Controller
             'telf' => $request->telf,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => 1,
+            'is_admin' => 0,
         ]);
 
         Auth::login($user);
