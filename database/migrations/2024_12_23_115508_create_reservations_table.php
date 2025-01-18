@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->date('date')->nullable();
             $table->time('hour')->nullable(); 
-            $table->string('worker_dni', 20)->nullable();
+            $table->string('worker_dni', 20)->nullable()->index();
             $table->foreign('worker_dni')->references('dni')->on('users');
             $table->string('client_dni', 20)->nullable();
             $table->foreign('client_dni')->references('dni')->on('clients');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreign('service_id')->references('id')->on('services');
             $table->unsignedBigInteger('shift_id')->nullable();
             $table->foreign('shift_id')->references('id')->on('shifts');
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending')->index();
             $table->timestamps();
         });
 

@@ -51,7 +51,9 @@ class ReservationController extends Controller
     {
         try {
 
-            $reservations = Reservation::with(['user', 'client', 'service'])->get();
+            $reservations = Reservation::with(['user', 'client', 'service'])
+            ->where('status', 'pending')
+            ->get();
 
             return response()->json([
                 'status' => 'true',
@@ -538,6 +540,8 @@ class ReservationController extends Controller
         try {
             $reservations = Reservation::where('client_dni', $dni)
                 ->with(['client', 'service'])
+                ->orderBy('date', 'desc')
+                ->orderBy('hour', 'desc')
                 ->get();
 
             if ($reservations->isEmpty()) {
@@ -610,6 +614,8 @@ class ReservationController extends Controller
         try {
             $reservations = Reservation::where('worker_dni', $dni)
                 ->with(['user', 'client', 'service'])
+                ->orderBy('date', 'desc')
+                ->orderBy('hour', 'desc')
                 ->get();;
 
             if ($reservations->isEmpty()) {
