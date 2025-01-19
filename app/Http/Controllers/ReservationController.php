@@ -51,7 +51,9 @@ class ReservationController extends Controller
     {
         try {
 
-            $reservations = Reservation::with(['user', 'client', 'service'])->get();
+            $reservations = Reservation::with(['user', 'client', 'service'])
+            ->where('status', 'pending')
+            ->get();
 
             return response()->json([
                 'status' => 'true',
@@ -533,31 +535,35 @@ class ReservationController extends Controller
      * )
      */
 
-    public function getReservationsByClient($dni)
-    {
-        try {
-            $reservations = Reservation::where('client_dni', $dni)
-                ->with(['client', 'service'])
-                ->get();
-
-            if ($reservations->isEmpty()) {
-                return response()->json([
-                    'message' => 'No s\'han trobat reserves per aquest client.'
-                ], 200);
-            }
-
-            return response()->json([
-                'status' => true,
-                'reservations' => $reservations
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Hi ha hagut un problema en carregar les reserves.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
+     public function getReservationsByClient($dni)
+     {
+         try {
+             $reservations = Reservation::where('client_dni', $dni)
+                 ->with(['client', 'service', 'user'])
+                 ->orderBy('date', 'desc')
+                 ->orderBy('hour', 'desc')
+                 ->get();
+     
+             if ($reservations->isEmpty()) {
+                 return response()->json([
+                     'message' => 'No s\'han trobat reserves per aquest client.'
+                 ], 200);
+             }
+     
+             return response()->json([
+                 'status' => true,
+                 'reservations' => $reservations,
+                 'treballador' => 0
+             ], 200);
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => false,
+                 'message' => 'Hi ha hagut un problema en carregar les reserves.',
+                 'error' => $e->getMessage()
+             ], 500);
+         }
+     }
+     
 
 
     /**
@@ -610,6 +616,8 @@ class ReservationController extends Controller
         try {
             $reservations = Reservation::where('worker_dni', $dni)
                 ->with(['user', 'client', 'service'])
+                ->orderBy('date', 'desc')
+                ->orderBy('hour', 'desc')
                 ->get();;
 
             if ($reservations->isEmpty()) {
@@ -620,7 +628,8 @@ class ReservationController extends Controller
 
             return response()->json([
                 'status' =>  true,
-                'reservations' => $reservations
+                'reservations' => $reservations,
+                'treballador' => 1
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
