@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Luis',
             'surname' => 'Perez',
-            'nick' => 'luisp',
+            'nick' => 'admin',
             'telf' => '123456789',
             'email' => 'test@example.com',
             'email_verified_at' => now(),
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
             'dni' => '20572143T',
-            'is_admin' => 0,
+            'is_admin' => 1,
         ]);
 
         Client::factory(20)->create();
@@ -46,9 +46,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'luisruiz@gmail.com'
         ]);
 
+        Client::factory()->create([
+            'dni' => '65572123F',
+            'name' => 'Roger',
+            'surname' => 'Surroca',
+            'telf' => '603543385',
+            'email' => 'rsurri@gmail.com'
+        ]);
+
+
         Shift::factory(1)->create();
 
-        Service::factory(3)->create();
+        Service::factory(40)->create();
 
         Reservation::factory()->create([
             "date" => "2025-01-01",
@@ -71,6 +80,30 @@ class DatabaseSeeder extends Seeder
             "status" => "completed",
             "rating" => 2
         ]);
+
+
+        Reservation::factory()->create([
+            "date" => "2025-01-01",
+            "hour" => "10:00",
+            "worker_dni" => "20572143T",
+            "client_dni" => "65572123F",
+            "service_id" => 1,
+            "shift_id" => 1,
+            "status" => "completed",
+            "rating" => 3
+        ]);
+
+        Reservation::factory()->create([
+            "date" => "2025-01-02",
+            "hour" => "11:00",
+            "worker_dni" => "20572143T",
+            "client_dni" => "65572123F",
+            "service_id" => 2,
+            "shift_id" => 1,
+            "status" => "completed",
+            "rating" => 2
+        ]);
+
 
         Product::create([
             'name' => 'Xampú Reparador',
